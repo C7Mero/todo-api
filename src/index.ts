@@ -148,8 +148,12 @@ app.delete('/api/v1/:id', async (req, res) => {
 
 AppDataSource.initialize()
     .then(() => {
-        console.log("start")
+        app.listen(port, () => {
+            console.log(`Example app listening on port ${port}!`);
+        });
     })
-    .catch((error) => console.log(error))
-app.listen(port, () => console.log(`Example apps listening on port ${port}!`));
+    .catch((error) => {
+        console.log(error);
+    });
+
 
