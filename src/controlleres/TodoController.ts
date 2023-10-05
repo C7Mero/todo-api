@@ -36,7 +36,7 @@ todoController.delete(':id', async (req, res) => {
         await TodoService.deleteTodo(id);
         res.json({ message: 'Todo deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: error});
+        res.status(500).json({ error: error });
     }
 });
 
