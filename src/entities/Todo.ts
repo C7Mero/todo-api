@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, Repository } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm"
 
 @Entity()
-export class Todo {
+export class Todo extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: string;
 
@@ -9,11 +9,15 @@ export class Todo {
         type: 'varchar',
         length: 100,
     })
-    name?: string;
+    name?: string = undefined;
 
     @Column()
     isDone?: boolean = false;
 
+    @Column()
+    status?: string = "未完了";
+
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt?: Date;
 }
+export default Todo
