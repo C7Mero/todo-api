@@ -1,5 +1,6 @@
 import express from 'express';
 import { TodoService } from '../services/TodoService';
+import { controllErrorResponse } from '../utils/controllerErrorResponse';
 
 export const todoController = express.Router();
 
@@ -8,7 +9,7 @@ todoController.get('/', async (req, res) => {
         const todos = await TodoService.getTodos();
         res.json(todos);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch todos' });
+        controllErrorResponse(res, error);
     }
 });
 todoController.post('/add', async (req, res) => {
@@ -17,7 +18,7 @@ todoController.post('/add', async (req, res) => {
         const newTodo = await TodoService.addTodo(name);
         res.json(newTodo);
     } catch (error) {
-        res.status(500).json({ error: error });
+        controllErrorResponse(res, error);
     }
 });
 todoController.put('/:id', async (req, res) => {
@@ -27,15 +28,15 @@ todoController.put('/:id', async (req, res) => {
         const editTodo = await TodoService.editTodo(name, isDone, id);
         res.json(editTodo);
     } catch (error) {
-        res.status(500).json({ error: error });
+        controllErrorResponse(res, error);
     }
 });
-todoController.delete(':id', async (req, res) => {
+todoController.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         await TodoService.deleteTodo(id);
     } catch (error) {
-        res.status(500).json({ error: error });
+        controllErrorResponse(res, error);
     }
 });
 

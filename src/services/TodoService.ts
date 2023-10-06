@@ -1,7 +1,8 @@
 import { Todo } from "../entities/Todo";
-import { findTodoById } from "../utils/findTodoById";
+import { getTodoById } from "../utils/getTodoById";
 import { getRepository } from "../utils/getRepository";
 import { updateTodo } from "../utils/updateTodo";
+import { serviceErrorResponse } from "../utils/serviceErrorResponse";
 
 export class TodoService {
     static todoRepo = getRepository();
@@ -10,7 +11,7 @@ export class TodoService {
         try {
             return await TodoService.todoRepo.find();
         } catch (error) {
-            throw new Error('Failed to get todos: ' + error);
+            serviceErrorResponse('Failed to get todos: ' + error);
         }
     }
     static async addTodo(name: string) {
@@ -20,26 +21,26 @@ export class TodoService {
             newTodo.name = name;
             return await TodoService.todoRepo.save(newTodo);
         } catch (error) {
-            throw new Error('Failed to add todo: ' + error);
+            serviceErrorResponse('Failed to add todos: ' + error);
         }
     }
     static async editTodo(name: string, isDone: boolean, id: string) {
         try {
-            const targetEditTodo = await findTodoById(id);
-            if (!targetEditTodo) return;
-            updateTodo(targetEditTodo, name, isDone);
-            return await TodoService.todoRepo.save(targetEditTodo);
+            const targetTodo = await getTodoById(id);
+            if(!targetTodo) return;
+            updateTodo(targetTodo, name, isDone);
+            return await TodoService.todoRepo.save(targetTodo);
         } catch (error) {
-            throw new Error('Failed to edit todo: ' + error);
+            serviceErrorResponse('Failed to edit todos: ' + error);
         }
     };
     static async deleteTodo(id: string) {
         try {
-            const targetDeleteTodo = await findTodoById(id);
-            if (!targetDeleteTodo) return;
-            return await TodoService.todoRepo.remove(targetDeleteTodo);
+            const targetTodo = await getTodoById(id);
+            if(!targetTodo) return;
+            return await TodoService.todoRepo.remove(targetTodo);
         } catch (error) {
-            throw new Error('Failed to edit todo: ' + error);
+            serviceErrorResponse('Failed to delete todos: ' + error);
         }
     };
 }
