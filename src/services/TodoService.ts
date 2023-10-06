@@ -1,47 +1,43 @@
-import { AppDataSource } from "../data-source";
 import { Todo } from "../entities/Todo";
+import { findTodoById } from "../utils/findTodoById";
 import { getRepository } from "../utils/getRepository";
+import { updateTodo } from "../utils/updateTodo";
 
 export class TodoService {
+    static todoRepo = getRepository();
+
     static async getTodos() {
         try {
-            const todoRepo = getRepository();
-            return await todoRepo.find();
+            return await TodoService.todoRepo.find();
         } catch (error) {
             throw new Error('Failed to get todos: ' + error);
         }
     }
     static async addTodo(name: string) {
         try {
-            const todoRepo = getRepository();
             if (!name) return;
-            const todo = new Todo();
-            todo.name = name;
-            await todoRepo.save(todo);
-            return todo;
+            const newTodo = new Todo();
+            newTodo.name = name;
+            return await TodoService.todoRepo.save(newTodo);
         } catch (error) {
             throw new Error('Failed to add todo: ' + error);
         }
     }
-    static async editTodo(name: string, isDone: boolean, status: string, id: string) {
+    static async editTodo(name: string, isDone: boolean, id: string) {
         try {
-            const todoRepo = getRepository();
-            const todo = await todoRepo.findOneBy({ id: id })
-            if (!todo) return;
-            if (name) todo.name = name;
-            if (isDone) todo.isDone = isDone;
-            if (status) todo.status = status;
-            return await todoRepo.save(todo);
+            const targetEditTodo = await findTodoById(id);
+            if (!targetEditTodo) return;
+            updateTodo(targetEditTodo, name, isDone);
+            return await TodoService.todoRepo.save(targetEditTodo);
         } catch (error) {
             throw new Error('Failed to edit todo: ' + error);
         }
     };
     static async deleteTodo(id: string) {
         try {
-            const todoRepo = getRepository();
-            const todo = await todoRepo.findOneBy({ id: id })
-            if (!todo) return;
-            return await todoRepo.remove(todo);
+            const targetDeleteTodo = await findTodoById(id);
+            if (!targetDeleteTodo) return;
+            return await TodoService.todoRepo.remove(targetDeleteTodo);
         } catch (error) {
             throw new Error('Failed to edit todo: ' + error);
         }

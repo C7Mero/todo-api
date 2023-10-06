@@ -9,13 +9,10 @@ export class Todo extends BaseEntity {
         type: 'varchar',
         length: 100,
     })
-    name?: string = undefined;
+    name?: string;
 
     @Column()
     isDone?: boolean = false;
-
-    @Column()
-    status?: string = "未完了";
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt?: Date;
